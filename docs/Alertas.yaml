@@ -22,13 +22,6 @@ tags:
   externalDocs:
     description: Find out more
     url: http://swagger.io
-- name: store
-  description: Access to Petstore orders
-- name: user
-  description: Operations about user
-  externalDocs:
-    description: Find out more about our store
-    url: http://swagger.io
 paths:
   /alertas/alertar112:
     post:
@@ -47,6 +40,9 @@ paths:
               $ref: '#/components/schemas/Ubicacion'
         required: true
       responses:
+        200:
+          description: successful operation
+          content: {}
         405:
           description: Invalid input
           content: {}
@@ -71,6 +67,9 @@ paths:
               $ref: '#/components/schemas/Alerta'
         required: true
       responses:
+        200:
+          description: successful operation
+          content: {}
         405:
           description: Invalid input
           content: {}
