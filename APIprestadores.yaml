@@ -1,0 +1,228 @@
+openapi: 3.0.1
+info:
+  title: API prestadores
+  description: 'API para los prestadores de servicio.'
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: javirojo@unex.es
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: https://spilab-prestador-1574856326652.appspot.com/docs
+servers:
+- url: https://spilab-prestador-1574856326652.appspot.com/
+tags:
+- name: data
+  description: Operaciones con los datos
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
+- name: institutions
+  description: Operaciones con las instituciones
+paths:
+  /data/{month}:
+    get:
+      tags:
+      - data
+      summary: Obtener la información de un mes para un usuario
+      parameters:
+        - in: path
+          name: month
+          schema:
+            type: integer
+          required: true
+          description: Numero del mes del que queremos recuperar la información
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataMonth'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/DataMonth'
+        401:
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        500:
+          description: "Error Interno"
+          content: {}
+        x-codegen-request-body-name: body
+    put:
+      tags:
+      - data
+      summary: Cambiar la disponibilidad para un día del mes indicado
+      parameters:
+        - in: path
+          name: month
+          schema:
+            type: integer
+          required: true
+          description: Numero del mes del que queremos cambiar la disponibilidad
+      requestBody:
+        $ref: '#/components/requestBodies/AvailabilityRequest'
+      responses:
+        200:
+          description: successful operation
+          content: {}
+        405:
+          description: Invalid input
+          content: {}
+        500:
+          description: "Error Interno"
+          content: {}
+      x-codegen-request-body-name: body 
+    
+    
+  /data/salary:
+    get:
+      tags:
+      - data
+      summary: Obtener la información del sueldo que obtendrá una persona ese año
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Salary'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Salary'
+        401:
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        500:
+          description: "Error Interno"
+          content: {}
+      x-codegen-request-body-name: body
+      
+      
+  /institutions:
+    get:
+      tags:
+      - institutions
+      summary: Obtener la información de las instituciones en las que está trabajando esa persona
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institutions'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Institutions'
+        401:
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unauthorized'
+        500:
+          description: "Error Interno"
+          content: {}
+      
+components:
+  schemas:
+  
+    DataMonth:
+      type: object
+      properties:
+        name:
+          type: string
+        totalneed:
+          type: number
+          format: float64
+        days:
+          type: array
+          items:
+            $ref: '#/components/schemas/Day'
+        places_names:
+          type: array
+          items:
+            type: string
+            
+      xml:
+        name: Month   
+    
+    Day:
+      type: object
+      properties:
+        need:
+          type: number
+          format: float64
+        availability:
+          type: string
+        places_do_servico:
+          type: array
+          items:
+            type: string
+      xml:
+        name: Day     
+    
+    Salary:
+      type: object
+      properties:
+        sueldo_base:
+          type: number
+          format: float64
+        sueldo:
+          type: number
+          format: float64
+      xml:
+        name: Salary 
+        
+    Institutions:
+      type: array
+      items:
+        type: string
+      xml:
+        name: Institutions
+        
+    Availability:
+      type: object
+      properties:
+        month:
+          type: number
+          format: integer
+        day:
+          type: number
+          format: integer
+        availability:
+          type: string
+      xml:
+        name: Availability 
+      
+    Unauthorized:
+      type: object
+      properties:
+        status:
+          type: number
+          format: integer
+        reason:
+          type: string
+      xml:
+        name: Unauthorized 
+        
+  requestBodies:
+    AvailabilityRequest:
+      description: Disponibilidad del usuario para un día y mes concretos
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Availability'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/Availability'
+      required: true
